@@ -2,7 +2,7 @@
 <project>
 	<fileVersion>3</fileVersion>
 	<configuration>
-		<name>Test_Bench</name>
+		<name>Test_Bench_1</name>
 		<toolchain>
 			<name>ARM</name>
 		</toolchain>
