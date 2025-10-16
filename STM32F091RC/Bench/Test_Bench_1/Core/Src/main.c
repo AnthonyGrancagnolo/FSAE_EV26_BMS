@@ -1,17 +1,29 @@
 // Test Bench SPI communication with Slave Devices
 
+#define debug
+
+
+
 #include "stm32f0xx.h"
 #include <stdint.h>
+#include <stdio.h>
+
 
 void gpioInit(void);
 void pinInit(void);
+void setAF(void);
 void spiInit(void);
 
 int main(void)
 {
     gpioInit();
-    pinInit();
+    pinInit(); 
+    setAF();
     spiInit();
+
+    #ifdef debug
+        fprintf(stdout, "SPI Initialized\n");
+    #endif
 
     while(1) {
 
@@ -28,19 +40,16 @@ void gpioInit(void)
 void pinInit(void)
 {
     // Configure PA5 (SCK), PA6 (MISO), PA7 (MOSI) as Alternate Function
-    GPIOA->MODER &= ~(GPIO_MODER_MODER5 | GPIO_MODER_MODER6 | GPIO_MODER_MODER7);
-    GPIOA->MODER |= (GPIO_MODER_MODER5_1 | GPIO_MODER_MODER6_1 | GPIO_MODER_MODER7_1);
+    GPIOA->MODER &= ~(3 << (5 * 2) | 3 << (6 * 2) | 3 << (7 * 2));
+    GPIOA->MODER |= (2 << (5 * 2) | 2 << (6 * 2) | 2 << (7 * 2));
 
-    // Set Alternate Function to AF0 (SPI1)
-    GPIOA->AFR[0] &= ~(GPIO_AFRL_AFRL5 | GPIO_AFRL_AFRL6 | GPIO_AFRL_AFRL7);
-    GPIOA->AFR[0] |= (0x0 << (5 * 4)) | (0x0 << (6 * 4)) | (0x0 << (7 * 4));
+}
 
-    // Configure PA5, PA6, PA7 as High Speed
-    GPIOA->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR5 | GPIO_OSPEEDR_OSPEEDR6 | GPIO_OSPEEDR_OSPEEDR7);
-
-    // Configure PA5, PA6, PA7 with Pull-Up resistors
-    GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPDR5 | GPIO_PUPDR_PUPDR6 | GPIO_PUPDR_PUPDR7);
-    GPIOA->PUPDR |= (GPIO_PUPDR_PUPDR5_0 | GPIO_PUPDR_PUPDR6_0 | GPIO_PUPDR_PUPDR7_0);
+void setAF(void)
+{
+    // Set Alternate Function 0 for PA5, PA6, PA7
+    GPIOA->AFR[0] &= ~(0xF << (5 * 4) | 0xF << (6 * 4) | 0xF << (7 * 4));
+    GPIOA->AFR[0] |= (0 << (5 * 4) | 0 << (6 * 4) | 0 << (7 * 4));
 }
 
 void spiInit(void)
@@ -54,3 +63,4 @@ void spiInit(void)
     // Enable SPI1
     SPI1->CR1 |= SPI_CR1_SPE;
 }
+
