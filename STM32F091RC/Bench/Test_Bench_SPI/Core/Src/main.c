@@ -4,10 +4,13 @@
 #include "main.h"
 
 
+
 int main(){
 	GPIOInit();
 	setAF();
 	SPIInit();
+
+	switch
 
 	return 0;
 }
