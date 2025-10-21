@@ -1040,3 +1040,23 @@ This warning can be switched off on the Team > Git > Confirmations and Warnings 
 
 !ENTRY org.eclipse.cdt.core 1 0 2025-10-21 19:30:44.851
 !MESSAGE Indexed 'Test_Bench_SPI' (21 sources, 83 headers) in 3.27 sec: 4,890 declarations; 30,574 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0056%)
+
+!ENTRY org.eclipse.egit.core 4 0 2025-10-21 19:43:12.462
+!MESSAGE An exception occurred during push on URI https://github.com/AnthonyGrancagnolo/FSAE_EV26_BMS: https://github.com/AnthonyGrancagnolo/FSAE_EV26_BMS: not authorized
+!STACK 0
+org.eclipse.jgit.api.errors.TransportException: https://github.com/AnthonyGrancagnolo/FSAE_EV26_BMS: not authorized
+	at org.eclipse.jgit.api.PushCommand.call(PushCommand.java:180)
+	at org.eclipse.egit.core.op.PushOperation.run(PushOperation.java:217)
+	at org.eclipse.egit.ui.internal.push.PushJob.performJob(PushJob.java:86)
+	at org.eclipse.egit.ui.internal.jobs.RepositoryJob.run(RepositoryJob.java:59)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: org.eclipse.jgit.errors.TransportException: https://github.com/AnthonyGrancagnolo/FSAE_EV26_BMS: not authorized
+	at org.eclipse.jgit.transport.TransportHttp.connect(TransportHttp.java:571)
+	at org.eclipse.jgit.transport.TransportHttp.openPush(TransportHttp.java:467)
+	at org.eclipse.jgit.transport.PushProcess.execute(PushProcess.java:160)
+	at org.eclipse.jgit.transport.Transport.push(Transport.java:1367)
+	at org.eclipse.jgit.api.PushCommand.call(PushCommand.java:170)
+	... 4 more
+
+!ENTRY org.eclipse.egit.ui 4 0 2025-10-21 19:43:12.464
+!MESSAGE Can't connect to any repository: https://github.com/AnthonyGrancagnolo/FSAE_EV26_BMS (https://github.com/AnthonyGrancagnolo/FSAE_EV26_BMS: not authorized)
