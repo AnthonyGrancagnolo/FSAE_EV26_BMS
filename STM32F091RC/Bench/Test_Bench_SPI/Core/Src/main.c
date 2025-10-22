@@ -4,13 +4,16 @@
 #include "main.h"
 
 
-
 int main(){
 	GPIOInit();
 	setAF();
-	SPIInit();
+	SPI1Init();
 
-	switch
+	while(1){
+		// TODO Send transmission
+
+
+	}
 
 	return 0;
 }
