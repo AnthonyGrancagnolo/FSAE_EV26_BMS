@@ -1,7 +1,7 @@
 #include "stm32f0xx.h"
 #include <stdint.h>
 #include <stdio.h>
-
+//Test
 // Pin Defines
 #define SPI1_PORT GPIOA
 
@@ -16,6 +16,24 @@
 
 #define SPI1_MOSI_PORT GPIOA
 #define SPI1_MOSI_PIN 7
+
+
+
+// --- DEVICE CONSTANTS ---
+#define L9963E_FRAME_BITS   20      // The L9963E uses a 20-bit frame
+#define L9963E_WRITE        0       // R/W bit for a write operation (bit 19)
+#define L9963E_READ         1       // R/W bit for a read operation (bit 19)
+
+// --- FRAME STRUCTURE MACROS (Conceptual: R/W(1)|ADDR(8)|DATA(11) ) ---
+// Note: This assumes the L9963E uses a fixed 4-bit CRC/parity within the 20-bit frame
+// or a simplified structure. The actual frame structure must be verified from the datasheet.
+#define L9963E_ADDRESS_MASK 0xFF
+#define L9963E_DATA_MASK    0x7FF   // 11 bits of data
+
+// --- STATIC STORAGE FOR THE OUT-OF-FRAME RESPONSE ---
+// The L9963E returns the answer to the N-th command in the (N+1)-th frame (out-of-frame).
+// This variable stores the response received from the *previous* SPI transaction.
+static uint32_t last_rx_frame = 0;
 
 
 // Functions Prototypes
