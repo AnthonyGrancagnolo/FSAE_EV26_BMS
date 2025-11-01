@@ -1,8 +1,5 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "spi.h"
-#include "usart.h"
-#include "gpio.h"
 #include "stm32f0xx_hal.h"
 #include <stdio.h>
 #include <stdint.h>
