@@ -1,188 +1,125 @@
-/* Includes ------------------------------------------------------------------*/
-#include "main.h"
-#include "spi.h"
-#include "usart.h"
-#include "gpio.h"
 #include "stm32f0xx_hal.h"
 #include <stdio.h>
 #include <stdint.h>
 
-/* Redirect printf to USART2 */
-int _write(int file, char *ptr, int len)
-{
-    HAL_UART_Transmit(&huart2, (uint8_t*)ptr, len, HAL_MAX_DELAY);
-    return len;
+#define SPI_CS_PORT		GPIOA
+#define SPI_CS_PIN		4
+
+#define SPI_MOSI_PORT	GPIOA
+#define SPI_MOSI_PIN	7
+
+#define SPI_SCK_PORT	GPIOA
+#define SPI_SCK_PIN		5
+
+#define SPI_MISO_PORT	GPIOA
+#define SPI_MISO_PIN	6
+
+#define SPI_CS_HIGH()   (SPI_CS_PORT->BSRR = (1U << (SPI_CS_PIN)))
+#define SPI_CS_LOW()    (SPI_CS_PORT->BSRR = (1U << (SPI_CS_PIN + 16)))
+
+void InitSPI(void){
+	RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+	RCC->AHBENR  |= RCC_AHBENR_GPIOAEN;
+
+	GPIOA->MODER &= ~(3U << (4*2));
+	GPIOA->MODER |=  (1U << (4*2));   // Output
+
+	GPIOA->MODER &= ~((3U << (5*2)) | (3U << (6*2)) | (3U << (7*2)));
+	GPIOA->MODER |=  ((2U << (5*2)) | (2U << (6*2)) | (2U << (7*2)));
+	GPIOA->AFR[0] &= ~((0xF << (5*4)) | (0xF << (6*4)) | (0xF << (7*4)));
+	GPIOA->AFR[0] |=  ((0x0 << (5*4)) | (0x0 << (6*4)) | (0x0 << (7*4))); // AF0 = SPI1
+
+	SPI1->CR1 &= ~(3u << 3);
+	SPI1->CR1 |= (1u << 9)  // SSM Software slave management enabled
+			   | (1u << 8)  // SSI interal Slave Select
+			   | (7u << 3)  // Baud rate control: fPCLK/4
+			   | (1u << 2);  // Master Selection
+
+
+	SPI1->CR2 |= (7u << 8); // DATA Size PG 817
+	// TODO 3: Enable SPI peripheral
+	SPI1->CR1 |= (1u << 6);  // SPI enabled
 }
 
-/* CS control */
-#define CS_PIN   GPIO_PIN_4
-#define CS_PORT  GPIOA
-static inline void CS_Select(void)   { HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET); }
-static inline void CS_Deselect(void) { HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);    }
 
-/* LED for activity (assumes user LED on PA5, adjust if different) */
-#define LED_PIN   GPIO_PIN_5
-#define LED_PORT  GPIOA
-static inline void LED_On(void)  { HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);   }
-static inline void LED_Off(void) { HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_RESET); }
-
-/* SPI transfer 16-bit */
-static uint16_t SPI_Transfer16(uint16_t tx)
+uint8_t computeCRC6(uint64_t frame_no_crc)
 {
-    uint16_t rx = 0;
-    if (HAL_SPI_TransmitReceive(&hspi1, (uint8_t*)&tx, (uint8_t*)&rx, 1, HAL_MAX_DELAY) != HAL_OK)
-    {
-        return 0xFFFF; // indicates error
+    uint8_t crc = 0x38; // seed = 0b111000
+    uint64_t data = frame_no_crc;
+
+    // Shift through bits 39..6 (we process 34 bits)
+    for (int i = 39; i >= 6; i--) {
+        uint8_t bit = (data >> i) & 0x1;
+        uint8_t crc_msb = (crc >> 5) & 0x1;
+        crc <<= 1;
+        if (bit ^ crc_msb)
+            crc ^= 0x19;  // polynomial x^6 + x^4 + x^3 + 1 -> 0b011001
+        crc &= 0x3F; // keep 6 bits
     }
-    return rx;
+    return crc & 0x3F;
 }
 
-/* WAKE pulse (if board uses PB0) */
-static void WakePulse(void)
-{
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    GPIO_InitTypeDef gpio = {0};
-    gpio.Pin   = GPIO_PIN_0;
-    gpio.Mode  = GPIO_MODE_OUTPUT_PP;
-    gpio.Pull  = GPIO_NOPULL;
-    gpio.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(GPIOB, &gpio);
+void L9963EGenFrame(uint8_t rw, uint8_t devID, uint16_t addr, uint8_t gsw, uint32_t data){
+	uint64_t frame = 0;
+	frame |= ((uint64_t)1      << 39); // P.A.
+	frame |= ((uint64_t)rw     << 38); // R/W
+	frame |= ((uint64_t)devID  << 35); // 3-bit device ID
+	frame |= ((uint64_t)addr   << 25); // 10-bit address
+	frame |= ((uint64_t)gsw    << 24); // 1-bit GSW
+	frame |= ((uint64_t)data   << 6);  // 18-bit data
 
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
-    HAL_Delay(5);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
-    HAL_Delay(2);
-    printf("Wake pulse done.\r\n");
+	uint8_t crc6 = computeCRC6(frame);
+	frame |= crc6; // place CRC in bits [5:0]
 }
 
-/* Change SPI mode */
-static HAL_StatusTypeDef SPI_SetMode(uint32_t cpol, uint32_t cpha)
-{
-    HAL_SPI_DeInit(&hspi1);
+static void spi_send8(uint8_t data) {
+	while (!(SPI1->SR & SPI_SR_TXE));
+	*((__IO uint8_t*)&SPI1->DR) = data;
+	while (SPI1->SR & SPI_SR_BSY);
 
-    hspi1.Init.CLKPolarity = cpol;
-    hspi1.Init.CLKPhase    = cpha;
-    if (HAL_SPI_Init(&hspi1) != HAL_OK) return HAL_ERROR;
-    return HAL_OK;
 }
 
-int main(void)
-{
-    HAL_Init();
-    SystemClock_Config();
+void l9963ESend40(uint64_t data){
 
-    MX_GPIO_Init();
-    MX_SPI1_Init();
-    MX_USART2_UART_Init();
+	SPI_CS_LOW();
 
-    CS_Deselect();
+	for(uint8_t i = 0; i < 4; i++){
+		spi_send8(0x00);
+	}
 
-    printf("\r\n=== Nucleo → ISOSPI1A → BMS Board Test ===\r\n");
-    printf("CS=PA4, SCK=PA5, MISO=PA6, MOSI=PA7, UART=USART2\r\n");
+	SPI_CS_HIGH();
 
-    WakePulse(); // optional
-
-    /* Test two SPI modes */
-    struct { uint32_t cpol, cpha; const char* name; } modes[] =
-    {
-        { SPI_POLARITY_LOW, SPI_PHASE_1EDGE, "Mode 0 (CPOL=0, CPHA=0)" },
-        { SPI_POLARITY_LOW, SPI_PHASE_2EDGE, "Mode 1 (CPOL=0, CPHA=1)" }
-    };
-
-    uint16_t testPatterns[] = { 0xAAAA, 0x5555, 0xC000, 0x3FFF, 0x8000, 0x8100 };
-    size_t numPatterns = sizeof(testPatterns)/sizeof(testPatterns[0]);
-
-    for (int m = 0; m < 2; m++)
-    {
-        printf("\r\n--- Testing %s ---\r\n", modes[m].name);
-        if (SPI_SetMode(modes[m].cpol, modes[m].cpha) != HAL_OK)
-        {
-            printf("Failed to set SPI mode.\r\n");
-            continue;
-        }
-        HAL_Delay(5);
-
-        for (size_t p = 0; p < numPatterns; p++)
-        {
-            uint16_t tx = testPatterns[p];
-
-            CS_Select();
-            uint16_t rx = SPI_Transfer16(tx);
-            CS_Deselect();
-
-            LED_On();
-            HAL_Delay(20);
-            LED_Off();
-
-            if (rx == 0xFFFF)
-            {
-                printf("Sent 0x%04X → SPI error\n", tx);
-            }
-            else
-            {
-                printf("Sent 0x%04X → Received 0x%04X\n", tx, rx);
-            }
-
-            HAL_Delay(200);
-        }
-
-        printf("Burst send of 0x%04X x8 (watch CS/SCK/MOSI/MISO on scope)\n", testPatterns[0]);
-        for (int i = 0; i < 8; i++)
-        {
-            CS_Select();
-            uint16_t rx = SPI_Transfer16(testPatterns[0]);
-            CS_Deselect();
-            printf(" Burst %d → 0x%04X\n", i, rx);
-            HAL_Delay(50);
-        }
-    }
-
-    printf("\r\n--- Automated tests done, entering continuous read loop ---\n");
-
-    /* Back to your “read cell” scenario */
-    // Set mode as needed
-    SPI_SetMode(SPI_POLARITY_LOW, SPI_PHASE_2EDGE); // Mode 1 for your device (if that is correct)
-    HAL_Delay(5);
-
-    while (1)
-    {
-        uint16_t cmd = 0xC000; // read command placeholder
-        CS_Select();
-        uint16_t rx = SPI_Transfer16(cmd);
-        CS_Deselect();
-
-        printf("ReadCmd 0x%04X → 0x%04X\n", cmd, rx);
-
-        HAL_Delay(300);
-    }
 }
 
-/* SystemClock_Config */
-void SystemClock_Config(void)
-{
-    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-    RCC_ClkInitTypeDef  RCC_ClkInitStruct = {0};
+static void L9963EWakeUp(void){
+	SPI_CS_LOW();
+	for(uint8_t i = 0; i < 5; i++){
+		spi_send8(0x52);
+	}
+	SPI_CS_HIGH();
 
-    RCC_OscInitTypeDef hO = {0};
-    RCC_OscInitStruct.OscillatorType      = RCC_OSCILLATORTYPE_HSI;
-    RCC_OscInitStruct.HSIState            = RCC_HSI_ON;
-    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-    RCC_OscInitStruct.PLL.PLLState        = RCC_PLL_NONE;
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) Error_Handler();
-
-    RCC_ClkInitStruct.ClockType      = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1;
-    RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_HSI;
-    RCC_ClkInitStruct.AHBCLKDivider  = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) Error_Handler();
 }
 
-/* Error Handler */
-void Error_Handler(void)
-{
-    __disable_irq();
-    while (1)
-    {
-        // stay here
-    }
+
+int main(){
+	InitSPI();
+
+
+	while(1){
+		L9963EWakeUp();
+
+
+		uint8_t rw = 1;
+		uint8_t devID = 1;
+		uint16_t addr = 2;
+		uint8_t gsw = 2;
+		uint32_t data = 2;
+		L9963EGenFrame(rw, devID, addr, gsw, data);
+
+
+	}
+
+
+
+	return 0;
 }
