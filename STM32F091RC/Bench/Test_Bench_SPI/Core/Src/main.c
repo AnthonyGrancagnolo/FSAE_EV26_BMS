@@ -1,125 +1,224 @@
-#include "stm32f0xx_hal.h"
-#include <stdio.h>
-#include <stdint.h>
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+//#include "adc.h"
+//#include "can.h"
+//#include "spi.h"
+//#include "tim.h"
+//#include "usart.h"
+//#include "gpio.h"
 
-#define SPI_CS_PORT		GPIOA
-#define SPI_CS_PIN		4
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include "L9963E.h"
+#include "L9963_utils.h"
+//#include "bms_hv_fsm.h"
+//#include "fsm.h"
+//#include "stm32_if.h"
+//#include "data_reading_timebase.h"
+//#include "ntc.h"
+//#include "timebase.h"
+//#include "timer_utils.h"
+/* USER CODE END Includes */
 
-#define SPI_MOSI_PORT	GPIOA
-#define SPI_MOSI_PIN	7
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
 
-#define SPI_SCK_PORT	GPIOA
-#define SPI_SCK_PIN		5
+/* USER CODE END PTD */
 
-#define SPI_MISO_PORT	GPIOA
-#define SPI_MISO_PIN	6
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
 
-#define SPI_CS_HIGH()   (SPI_CS_PORT->BSRR = (1U << (SPI_CS_PIN)))
-#define SPI_CS_LOW()    (SPI_CS_PORT->BSRR = (1U << (SPI_CS_PIN + 16)))
+/* USER CODE END PD */
 
-void InitSPI(void){
-	RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
-	RCC->AHBENR  |= RCC_AHBENR_GPIOAEN;
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
 
-	GPIOA->MODER &= ~(3U << (4*2));
-	GPIOA->MODER |=  (1U << (4*2));   // Output
+/* USER CODE END PM */
 
-	GPIOA->MODER &= ~((3U << (5*2)) | (3U << (6*2)) | (3U << (7*2)));
-	GPIOA->MODER |=  ((2U << (5*2)) | (2U << (6*2)) | (2U << (7*2)));
-	GPIOA->AFR[0] &= ~((0xF << (5*4)) | (0xF << (6*4)) | (0xF << (7*4)));
-	GPIOA->AFR[0] |=  ((0x0 << (5*4)) | (0x0 << (6*4)) | (0x0 << (7*4))); // AF0 = SPI1
+/* Private variables ---------------------------------------------------------*/
 
-	SPI1->CR1 &= ~(3u << 3);
-	SPI1->CR1 |= (1u << 9)  // SSM Software slave management enabled
-			   | (1u << 8)  // SSI interal Slave Select
-			   | (7u << 3)  // Baud rate control: fPCLK/4
-			   | (1u << 2);  // Master Selection
+/* USER CODE BEGIN PV */
 
+/* USER CODE END PV */
 
-	SPI1->CR2 |= (7u << 8); // DATA Size PG 817
-	// TODO 3: Enable SPI peripheral
-	SPI1->CR1 |= (1u << 6);  // SPI enabled
-}
+/* Private function prototypes -----------------------------------------------*/
+void SystemClock_Config(void);
+/* USER CODE BEGIN PFP */
 
+/* USER CODE END PFP */
 
-uint8_t computeCRC6(uint64_t frame_no_crc)
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+FSM_HandleTypeDef hfsm;
+uint8_t volatile error_code = 30;
+uint8_t charge_cmd, drive_cmd, balancing_cmd;
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
 {
-    uint8_t crc = 0x38; // seed = 0b111000
-    uint64_t data = frame_no_crc;
 
-    // Shift through bits 39..6 (we process 34 bits)
-    for (int i = 39; i >= 6; i--) {
-        uint8_t bit = (data >> i) & 0x1;
-        uint8_t crc_msb = (crc >> 5) & 0x1;
-        crc <<= 1;
-        if (bit ^ crc_msb)
-            crc ^= 0x19;  // polynomial x^6 + x^4 + x^3 + 1 -> 0b011001
-        crc &= 0x3F; // keep 6 bits
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+    L9963E_utils_init();
+    //fsm
+    uint8_t n_events = 0;
+
+    if (FSM_BMS_HV_init(&hfsm, n_events, run_callback_1, transition_callback_1) != STMLIBS_OK) {
+        error_code = 2;
     }
-    return crc & 0x3F;
+    if (FSM_start(&hfsm) != STMLIBS_OK) {
+        error_code = 2;
+    }
+    if (FSM_get_state(&hfsm) == FSM_BMS_HV_active_idle){
+      // If first state is active idle then we good
+      Warn_LED_On();
+      HAL_Delay(1000);
+      Warn_LED_Off();
+    } else {
+      Err_LED_On();
+    }
+
+    data_reading_timebase_init();
+    ntc_init();
+
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+//  MX_ADC1_Init();
+//  MX_CAN1_Init();
+//  MX_CAN2_Init();
+  MX_SPI1_Init();
+//  MX_SPI2_Init();
+//  MX_SPI3_Init();
+//  MX_USART3_UART_Init();
+  MX_TIM6_Init();
+  /* USER CODE BEGIN 2 */
+    Stat1_LED_On(); // Turn on the LED
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+    while (1) {
+      data_reading_timebase_routine();
+      FSM_routine(&hfsm);
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+    }
+  /* USER CODE END 3 */
 }
 
-void L9963EGenFrame(uint8_t rw, uint8_t devID, uint16_t addr, uint8_t gsw, uint32_t data){
-	uint64_t frame = 0;
-	frame |= ((uint64_t)1      << 39); // P.A.
-	frame |= ((uint64_t)rw     << 38); // R/W
-	frame |= ((uint64_t)devID  << 35); // 3-bit device ID
-	frame |= ((uint64_t)addr   << 25); // 10-bit address
-	frame |= ((uint64_t)gsw    << 24); // 1-bit GSW
-	frame |= ((uint64_t)data   << 6);  // 18-bit data
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-	uint8_t crc6 = computeCRC6(frame);
-	frame |= crc6; // place CRC in bits [5:0]
+  /** Configure the main internal regulator output voltage
+  */
+  __HAL_RCC_PWR_CLK_ENABLE();
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
+
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
-static void spi_send8(uint8_t data) {
-	while (!(SPI1->SR & SPI_SR_TXE));
-	*((__IO uint8_t*)&SPI1->DR) = data;
-	while (SPI1->SR & SPI_SR_BSY);
+/* USER CODE BEGIN 4 */
 
+/* USER CODE END 4 */
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+    /* User can add his own implementation to report the HAL error return state */
+    __disable_irq();
+    while (1) {
+    }
+  /* USER CODE END Error_Handler_Debug */
 }
 
-void l9963ESend40(uint64_t data){
-
-	SPI_CS_LOW();
-
-	for(uint8_t i = 0; i < 4; i++){
-		spi_send8(0x00);
-	}
-
-	SPI_CS_HIGH();
-
+#ifdef  USE_FULL_ASSERT
+/**
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
+void assert_failed(uint8_t *file, uint32_t line)
+{
+  /* USER CODE BEGIN 6 */
+    /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* USER CODE END 6 */
 }
-
-static void L9963EWakeUp(void){
-	SPI_CS_LOW();
-	for(uint8_t i = 0; i < 5; i++){
-		spi_send8(0x52);
-	}
-	SPI_CS_HIGH();
-
-}
-
-
-int main(){
-	InitSPI();
-
-
-	while(1){
-		L9963EWakeUp();
-
-
-		uint8_t rw = 1;
-		uint8_t devID = 1;
-		uint16_t addr = 2;
-		uint8_t gsw = 2;
-		uint32_t data = 2;
-		L9963EGenFrame(rw, devID, addr, gsw, data);
-
-
-	}
-
-
-
-	return 0;
-}
+#endif /* USE_FULL_ASSERT */

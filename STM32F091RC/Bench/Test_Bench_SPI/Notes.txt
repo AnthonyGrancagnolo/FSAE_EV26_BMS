@@ -1,0 +1,86 @@
+#include "stm32f0xx_hal.h"
+#include <stdint.h>
+
+#define SPI_CS_PORT GPIOA
+#define SPI_CS_PIN  4
+#define SPI_CS_HIGH() (SPI_CS_PORT->BSRR = (1U << SPI_CS_PIN))
+#define SPI_CS_LOW()  (SPI_CS_PORT->BSRR = (1U << (SPI_CS_PIN + 16)))
+
+void InitSPI(void) {
+    RCC->AHBENR  |= RCC_AHBENR_GPIOAEN;
+    RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+
+    // PA4 = CS, PA5 = SCK, PA6 = MISO, PA7 = MOSI
+    GPIOA->MODER &= ~(3U << (4*2));
+    GPIOA->MODER |=  (1U << (4*2)); // Output
+    GPIOA->OTYPER &= ~(1U << 4);
+    GPIOA->OSPEEDR |= (3U << (4*2)); // High speed
+
+    GPIOA->MODER &= ~((3U << (5*2)) | (3U << (6*2)) | (3U << (7*2)));
+    GPIOA->MODER |=  ((2U << (5*2)) | (2U << (6*2)) | (2U << (7*2)));
+    GPIOA->AFR[0] &= ~((0xF << (5*4)) | (0xF << (6*4)) | (0xF << (7*4)));
+    GPIOA->AFR[0] |=  ((0x0 << (5*4)) | (0x0 << (6*4)) | (0x0 << (7*4))); // AF0 = SPI1
+
+    SPI1->CR1 = 0;
+    SPI1->CR1 |= (1U << 2);          // Master
+    SPI1->CR1 |= (1U << 8) | (1U << 9); // SSM, SSI
+    SPI1->CR1 |= (2U << 3);          // Baud rate = fPCLK/8
+    SPI1->CR1 &= ~((1U << 1) | (1U << 0)); // CPOL=0, CPHA=0 (Mode 0)
+    SPI1->CR2 = (7U << 8);           // 8-bit data
+    SPI1->CR1 |= (1U << 6);          // Enable SPI
+}
+
+static void spi_send8(uint8_t data) {
+    while (!(SPI1->SR & SPI_SR_TXE));
+    *((__IO uint8_t*)&SPI1->DR) = data;
+    while (SPI1->SR & SPI_SR_BSY);
+}
+
+uint8_t L9963E_ComputeCRC6(uint64_t frame_no_crc) {
+    uint8_t crc = 0x38;
+    for (int i = 39; i >= 6; i--) {
+        uint8_t bit = (frame_no_crc >> i) & 0x1;
+        uint8_t crc_msb = (crc >> 5) & 0x1;
+        crc <<= 1;
+        if (bit ^ crc_msb)
+            crc ^= 0x19;
+        crc &= 0x3F;
+    }
+    return crc;
+}
+
+void L9963E_SendFrame(uint8_t rw, uint8_t devID, uint16_t addr, uint8_t gsw, uint32_t data) {
+    uint64_t frame = 0;
+    frame |= (1ULL << 39);
+    frame |= ((uint64_t)rw    << 38);
+    frame |= ((uint64_t)devID << 35);
+    frame |= ((uint64_t)addr  << 25);
+    frame |= ((uint64_t)gsw   << 24);
+    frame |= ((uint64_t)data  << 6);
+    frame |= L9963E_ComputeCRC6(frame);
+
+    SPI_CS_LOW();
+    for (int i = 4; i >= 0; i--)
+        spi_send8((frame >> (i * 8)) & 0xFF);
+    SPI_CS_HIGH();
+}
+
+void L9963E_WakeUp(void) {
+    SPI_CS_HIGH();
+    for (volatile int i = 0; i < 1000; i++); // ~10 µs
+    L9963E_SendFrame(0, 0b000, 0x000, 0, 0x00000);
+    for (volatile int i = 0; i < 10000; i++); // wait ~100 µs
+}
+
+int main(void) {
+    HAL_Init();
+    InitSPI();
+
+    while (1) {
+        L9963E_WakeUp();
+        for (volatile int i = 0; i < 100000; i++);
+        // Example user frame
+        L9963E_SendFrame(0, 0b001, 0x002, 0, 0x12345);
+        for (volatile int i = 0; i < 100000; i++);
+    }
+}
