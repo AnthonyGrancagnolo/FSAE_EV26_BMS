@@ -49,6 +49,8 @@
 
 /* USER CODE BEGIN PV */
 bool SHUTDOWN;
+bool VOLTAGE_NSAFE;
+bool THERM_NSAFE;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -99,6 +101,14 @@ int main(void)
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
 
+  // TODO Make sure Voltages and thermals can be read.
+
+  // TODO Check if Systems are ready to discharge
+  // SET shutdown loop to
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6,GPIO_PIN_SET);
+  SHUTDOWN = false;
+  THERM_NSAFE = false;
+  VOLTAGE_NSAFE = false;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -106,33 +116,40 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  // TODO READ ADC from DMA
-	  	  //https://controllerstech.com/stm32-adc-multiple-channels-dma-normal-mode/
-	  	  //https://controllerstech.com/stm32-adc-multiple-channels-circular-dma/
-	  // TODO SPI transmission
+    /* USER CODE BEGIN 3 */
 
-	  // TODO CAN transmission
-	  // https://www.compilenrun.com/docs/iot/stm32/stm32-communication-protocols/stm32-can-basics/
-	  	  // TODO Package CAN Transmission
-	  	  //
-		#if DEBUGUart
-	  // TODO Uart DEBUG Transmission
-		#endif
-	  // TODO Store values to EEPROM
+	  // TODO ADC
 
-	  // TODO Shutdown System
-	  	  // Interrupt Based System
+	  // TODO DMA
 
-	  // How do we enter the Shutdown Stata
+	  // TODO SPI
+	  // Send burst command to get all voltage and thermal levels
+
+	  // Store the values in a structure
+
+
+	  // TODO If Voltages or thermistors are out of line
+	  if(VOLTAGE_NSAFE || THERM_NSAFE){ // Voltages are above X or below Y
+		  SHUTDOWN = true;
+	  	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6,GPIO_PIN_RESET);
+	  }
+	  // TODO SHUTDOWN
+
 	  while(SHUTDOWN){
 
-
-		  //How to we exit the shutdown state
+		  // TODO send CAN Messages to diag the problem only faults
+		  // TODO Check if fault is clear
+		  // TODO send SPI Burst command to check voltages
+		  // TODO if pack returns to a safe state
+		  if(VOLTAGE_NSAFE && THERM_NSAFE){
+			  SHUTDOWN = false;
+			  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6,GPIO_PIN_SET);
+		  }
 	  }
 
+	  // TODO CAN send Voltages and Thermal Measurements over CAN (Pack Voltage, current draw,
 
-
-    /* USER CODE BEGIN 3 */
+	  // TODO EEPROM
   }
   /* USER CODE END 3 */
 }
@@ -155,7 +172,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL2;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL4;
   RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV1;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {

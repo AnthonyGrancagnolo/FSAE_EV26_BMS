@@ -11,10 +11,10 @@
 #define ADC_COUNTS     4095.0f
 
 /* Resistor divider */
-#define DIVIDER_RATIO  0.6667f   // R
+#define DIVIDER_RATIO  1.575f   //  R1 + R2 /R2
 
 /* DHAB S/124 Channel 1 */
-#define OFFSET         2.5f      // volts (sensor side)
+#define OFFSET         2.5f      // volts Tues
 #define SENSITIVITY    0.0267f   // V/A
 
 float getCurrent(const uint16_t *buffer, uint32_t length)
@@ -25,10 +25,11 @@ float getCurrent(const uint16_t *buffer, uint32_t length)
     float V_adc = (adc_avg * VREF_ADC) / ADC_COUNTS;
 
     // Undo resistor divider
-    float V_sensor = V_adc / DIVIDER_RATIO;
+    float V_sensor = V_adc * DIVIDER_RATIO;
 
     // Sensor voltage → current
-    return (V_sensor - OFFSET) / SENSITIVITY;
+    return (1/SENSITIVITY)*(V_sensor-OFFSET); //(V_sensor - OFFSET) / SENSITIVITY;
+
 }
 
 uint32_t averageADC(const uint16_t *buffer, uint32_t length)

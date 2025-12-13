@@ -3,10 +3,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "can.h"
 #include "dma.h"
 #include "usart.h"
 #include "gpio.h"
-
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -24,7 +24,6 @@
 /* USER CODE BEGIN PD */
 
 #define ADC_BUF_LEN 32
-
 uint16_t adc_buffer[ADC_BUF_LEN];
 float current;
 
@@ -80,6 +79,7 @@ int main(void)
   MX_DMA_Init();
   MX_ADC_Init();
   MX_USART2_UART_Init();
+  MX_CAN_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_ADCEx_Calibration_Start(&hadc);

@@ -75,9 +75,9 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : SPI1_BNE_CPOL_Pin SPI1_NSLAVE_Pin SPI1_TXEN_CPHA_Pin SPI1_CLKFREQ_Pin
-                           SPI1_TXAMP_Pin Shutdown_Control_Pin */
+                           SPI1_TXAMP_Pin */
   GPIO_InitStruct.Pin = SPI1_BNE_CPOL_Pin|SPI1_NSLAVE_Pin|SPI1_TXEN_CPHA_Pin|SPI1_CLKFREQ_Pin
-                          |SPI1_TXAMP_Pin|Shutdown_Control_Pin;
+                          |SPI1_TXAMP_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -102,6 +102,13 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(SPI3_NCS_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Shutdown_Control_Pin */
+  GPIO_InitStruct.Pin = Shutdown_Control_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(Shutdown_Control_GPIO_Port, &GPIO_InitStruct);
 
 }
 
