@@ -1,0 +1,6 @@
+../Core/Inc/main.h:56:6:GPIOInit	4	static
+../Core/Inc/main.h:60:6:setAF	4	static
+../Core/Inc/main.h:64:6:SPIInit	4	static
+../Core/Src/adc.c:31:6:MX_ADC1_Init	48	static
+../Core/Src/adc.c:116:6:HAL_ADC_MspInit	48	static
+../Core/Src/adc.c:161:6:HAL_ADC_MspDeInit	16	static

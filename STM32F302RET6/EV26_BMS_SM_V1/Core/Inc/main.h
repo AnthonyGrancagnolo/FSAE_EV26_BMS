@@ -27,6 +27,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f3xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -49,9 +50,7 @@ extern "C" {
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-void GPIOInit(void);
-void setAF(void);
-void SPIInit(void);
+void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 void GPIOInit(void){
@@ -68,6 +67,42 @@ void SPIInit(){
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define UoutLC_Buff_Pin GPIO_PIN_0
+#define UoutLC_Buff_GPIO_Port GPIOA
+#define UoutHC_Buff_Pin GPIO_PIN_2
+#define UoutHC_Buff_GPIO_Port GPIOA
+#define SPI1_DIS_Pin GPIO_PIN_4
+#define SPI1_DIS_GPIO_Port GPIOC
+#define SPI1_ISOFREQ_Pin GPIO_PIN_5
+#define SPI1_ISOFREQ_GPIO_Port GPIOC
+#define SPI1_BNE_CPOL_Pin GPIO_PIN_0
+#define SPI1_BNE_CPOL_GPIO_Port GPIOB
+#define SPI1_NSLAVE_Pin GPIO_PIN_1
+#define SPI1_NSLAVE_GPIO_Port GPIOB
+#define SPI1_TXEN_CPHA_Pin GPIO_PIN_2
+#define SPI1_TXEN_CPHA_GPIO_Port GPIOB
+#define SPI1_CLKFREQ_Pin GPIO_PIN_10
+#define SPI1_CLKFREQ_GPIO_Port GPIOB
+#define SPI1_TXAMP_Pin GPIO_PIN_11
+#define SPI1_TXAMP_GPIO_Port GPIOB
+#define SPI2_TXAMP_Pin GPIO_PIN_6
+#define SPI2_TXAMP_GPIO_Port GPIOC
+#define SPI2_CLKFREQ_Pin GPIO_PIN_7
+#define SPI2_CLKFREQ_GPIO_Port GPIOC
+#define SPI2_TXEN_CPHA_Pin GPIO_PIN_8
+#define SPI2_TXEN_CPHA_GPIO_Port GPIOC
+#define SPI2_NSLAVE_Pin GPIO_PIN_9
+#define SPI2_NSLAVE_GPIO_Port GPIOC
+#define SPI2_BNE_CPOL_Pin GPIO_PIN_8
+#define SPI2_BNE_CPOL_GPIO_Port GPIOA
+#define SPI2_ISOFREQ_Pin GPIO_PIN_9
+#define SPI2_ISOFREQ_GPIO_Port GPIOA
+#define SPI2_DIS_Pin GPIO_PIN_10
+#define SPI2_DIS_GPIO_Port GPIOA
+#define SPI3_NCS_Pin GPIO_PIN_2
+#define SPI3_NCS_GPIO_Port GPIOD
+#define Shutdown_Control_Pin GPIO_PIN_6
+#define Shutdown_Control_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 volatile uint8_t vehicleState = 0; // 0 = Fault, 1 = Ready, 2 = Charging, 3 = Drive

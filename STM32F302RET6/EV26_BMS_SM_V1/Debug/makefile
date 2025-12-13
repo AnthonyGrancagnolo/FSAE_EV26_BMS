@@ -60,8 +60,8 @@ all: main-build
 main-build: EV26_BMS_SM_V1.elf secondary-outputs
 
 # Tool invocations
-EV26_BMS_SM_V1.elf EV26_BMS_SM_V1.map: $(OBJS) $(USER_OBJS) C:\Users\klime\git\bms26\FSAE_EV26_BMS\STM32F302RET6\EV26_BMS_SM_V1\STM32F302RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "EV26_BMS_SM_V1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\klime\git\bms26\FSAE_EV26_BMS\STM32F302RET6\EV26_BMS_SM_V1\STM32F302RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="EV26_BMS_SM_V1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+EV26_BMS_SM_V1.elf EV26_BMS_SM_V1.map: $(OBJS) $(USER_OBJS) C:\Users\antgr\git\FSAE_EV26_BMS\STM32F302RET6\EV26_BMS_SM_V1\STM32F302RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "EV26_BMS_SM_V1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\antgr\git\FSAE_EV26_BMS\STM32F302RET6\EV26_BMS_SM_V1\STM32F302RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="EV26_BMS_SM_V1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
