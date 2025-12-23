@@ -28,16 +28,30 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+
+
 
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define DEBUGUart
+
+enum states{
+	FAULT,
+	CHARGING,
+	DISCHARGING,
+
+} state;
+
+enum events{
+
+};
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -51,6 +65,7 @@
 bool SHUTDOWN;
 bool VOLTAGE_NSAFE;
 bool THERM_NSAFE;
+bool CURRENT_NSAFE;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -109,6 +124,7 @@ int main(void)
   SHUTDOWN = false;
   THERM_NSAFE = false;
   VOLTAGE_NSAFE = false;
+  CURRENT_NSAFE = false;
   /* USER CODE END 2 */
 
   /* Infinite loop */
