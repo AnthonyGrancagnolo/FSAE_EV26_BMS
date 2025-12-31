@@ -53,17 +53,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-void GPIOInit(void){
 
-}
-
-void setAF(void){
-
-}
-
-void SPIInit(){
-
-}
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -71,6 +61,8 @@ void SPIInit(){
 #define UoutLC_Buff_GPIO_Port GPIOA
 #define UoutHC_Buff_Pin GPIO_PIN_2
 #define UoutHC_Buff_GPIO_Port GPIOA
+#define SPI1_CS_Pin_Pin GPIO_PIN_4
+#define SPI1_CS_Pin_GPIO_Port GPIOA
 #define SPI1_DIS_Pin GPIO_PIN_4
 #define SPI1_DIS_GPIO_Port GPIOC
 #define SPI1_ISOFREQ_Pin GPIO_PIN_5
@@ -105,7 +97,6 @@ void SPIInit(){
 #define Shutdown_Control_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-volatile uint8_t vehicleState = 0; // 0 = Fault, 1 = Ready, 2 = Charging, 3 = Drive
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

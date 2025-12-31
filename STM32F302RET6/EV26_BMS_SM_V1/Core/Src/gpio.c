@@ -52,6 +52,9 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, SPI1_CS_Pin_Pin|SPI2_ISOFREQ_Pin|SPI2_DIS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, SPI1_DIS_Pin|SPI1_ISOFREQ_Pin|SPI2_TXAMP_Pin|SPI2_CLKFREQ_Pin
                           |SPI2_TXEN_CPHA_Pin|SPI2_NSLAVE_Pin, GPIO_PIN_RESET);
 
@@ -60,10 +63,14 @@ void MX_GPIO_Init(void)
                           |SPI1_TXAMP_Pin|Shutdown_Control_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, SPI2_ISOFREQ_Pin|SPI2_DIS_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SPI3_NCS_GPIO_Port, SPI3_NCS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : SPI1_CS_Pin_Pin SPI2_ISOFREQ_Pin SPI2_DIS_Pin */
+  GPIO_InitStruct.Pin = SPI1_CS_Pin_Pin|SPI2_ISOFREQ_Pin|SPI2_DIS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : SPI1_DIS_Pin SPI1_ISOFREQ_Pin SPI2_TXAMP_Pin SPI2_CLKFREQ_Pin
                            SPI2_TXEN_CPHA_Pin SPI2_NSLAVE_Pin */
@@ -88,13 +95,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(SPI2_BNE_CPOL_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : SPI2_ISOFREQ_Pin SPI2_DIS_Pin */
-  GPIO_InitStruct.Pin = SPI2_ISOFREQ_Pin|SPI2_DIS_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : SPI3_NCS_Pin */
   GPIO_InitStruct.Pin = SPI3_NCS_Pin;

@@ -1,0 +1,6 @@
+../Core/Src/can_encode.c:4:6:Encode_BMS_STATUS	48	static
+../Core/Src/can_encode.c:28:6:Encode_BMS_QUADVOLTS	40	static
+../Core/Src/can_encode.c:42:6:Encode_BMS_CELLVOLTS	40	static
+../Core/Src/can_encode.c:56:6:Encode_BMS_TEMPS	40	static
+../Core/Src/can_encode.c:70:6:Encode_INVERTER_CTRL	32	static
+../Core/Src/can_encode.c:81:6:Encode_SYS_STATUS	40	static

@@ -1,4 +1,1 @@
-../Core/Inc/main.h:56:6:GPIOInit	1
-../Core/Inc/main.h:60:6:setAF	1
-../Core/Inc/main.h:64:6:SPIInit	1
 ../Core/Src/gpio.c:42:6:MX_GPIO_Init	1

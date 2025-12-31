@@ -1,6 +1,4 @@
-../Core/Inc/main.h:56:6:GPIOInit	4	static
-../Core/Inc/main.h:60:6:setAF	4	static
-../Core/Inc/main.h:64:6:SPIInit	4	static
-../Core/Src/main.c:71:5:main	8	static
-../Core/Src/main.c:161:6:SystemClock_Config	144	static
-../Core/Src/main.c:211:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:95:5:main	32	static
+../Core/Src/main.c:233:6:SystemClock_Config	144	static
+../Core/Src/main.c:276:6:HAL_CAN_RxFifo0MsgPendingCallback	136	static
+../Core/Src/main.c:351:6:Error_Handler	4	static,ignoring_inline_asm

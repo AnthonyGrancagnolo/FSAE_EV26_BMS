@@ -1,0 +1,6 @@
+../Core/Src/can_decode.c:6:6:Decode_BMS_STATUS	1
+../Core/Src/can_decode.c:27:6:Decode_BMS_QUADVOLTS	1
+../Core/Src/can_decode.c:40:6:Decode_BMS_CELLVOLTS	1
+../Core/Src/can_decode.c:53:6:Decode_BMS_TEMPS	1
+../Core/Src/can_decode.c:66:6:Decode_INVERTER_CTRL	1
+../Core/Src/can_decode.c:75:6:Decode_SYS_STATUS	1

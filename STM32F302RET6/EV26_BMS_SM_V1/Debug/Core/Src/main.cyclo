@@ -1,6 +1,4 @@
-../Core/Inc/main.h:56:6:GPIOInit	1
-../Core/Inc/main.h:60:6:setAF	1
-../Core/Inc/main.h:64:6:SPIInit	1
-../Core/Src/main.c:71:5:main	6
-../Core/Src/main.c:161:6:SystemClock_Config	4
-../Core/Src/main.c:211:6:Error_Handler	1
+../Core/Src/main.c:95:5:main	14
+../Core/Src/main.c:233:6:SystemClock_Config	4
+../Core/Src/main.c:276:6:HAL_CAN_RxFifo0MsgPendingCallback	10
+../Core/Src/main.c:351:6:Error_Handler	1

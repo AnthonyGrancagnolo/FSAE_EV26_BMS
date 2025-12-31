@@ -117,38 +117,38 @@ TxHeader.TransmitGlobalTime = DISABLE;
 		// Encode BMS_STATUS
 		/* =================== BMS_STATUS =================== */
 		Encode_BMS_STATUS(
-		  350.5f,    // PACKVOLTS
-		  -120.2f,   // PACKAMPS
-		  76.0f,     // STATEOFCHARGE
-		  0, 0, 0, 0, 0, 1, 1, 0, // status bits
-		  TxData
-		);
+			350.5f,    // PACKVOLTS
+			-120.2f,   // PACKAMPS
+			76.0f,     // STATEOFCHARGE
+			0, 0, 0, 0, 0, 1, 1, 0, // status bits
+			TxData
+			);
 		while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan) == 0);
 		if(HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK) Error_Handler();
 
 		/* =================== BMS_QUADVOLTS =================== */
 		Encode_BMS_QUADVOLTS(
-		  12.34f, 12.45f, 12.56f, 12.67f, // QUAD1-4
-		  TxData
-		);
+			12.34f, 12.45f, 12.56f, 12.67f, // QUAD1-4
+			TxData
+			);
 		TxHeader.StdId = 1543; // Update CAN ID
 		while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan) == 0);
 		if(HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK) Error_Handler();
 
 		/* =================== BMS_CELLVOLTS =================== */
 		Encode_BMS_CELLVOLTS(
-		  3.456f, 3.467f, 3.478f, 3.489f, // AVGVOLT1-4
-		  TxData
-		);
+			3.456f, 3.467f, 3.478f, 3.489f, // AVGVOLT1-4
+			TxData
+			);
 		TxHeader.StdId = 1544;
 		while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan) == 0);
 		if(HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK) Error_Handler();
 
 		/* =================== BMS_TEMPS =================== */
 		Encode_BMS_TEMPS(
-		  25.0f, 26.0f, 24.5f, 25.5f, // TEMP1-4
-		  TxData
-		);
+			25.0f, 26.0f, 24.5f, 25.5f, // TEMP1-4
+			TxData
+			);
 		TxHeader.StdId = 1545;
 		while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan) == 0);
 		if(HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK) Error_Handler();
