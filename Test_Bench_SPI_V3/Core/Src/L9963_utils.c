@@ -32,6 +32,12 @@ void L9963E_utils_init(void) {
         has the same configuration, we are using Broadcast access 
         to write to all chips at once **/
 
+    // configure the rest of the l9963t
+
+    HAL_GPIO_WritePin(NSLAVE1_GPIO_Port, NSLAVE1_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(CLKFREQ1_GPIO_Port, CLKFREQ1_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(TXAMP1_GPIO_Port, TXAMP1_Pin, GPIO_PIN_SET);
+
     // Configuring GPIOs
     L9963E_RegisterUnionTypeDef gpio9_3_conf_reg = {.generic = L9963E_GPIO9_3_CONF_DEFAULT};
     gpio9_3_conf_reg.GPIO9_3_CONF.GPIO7_CONFIG   = 0;
