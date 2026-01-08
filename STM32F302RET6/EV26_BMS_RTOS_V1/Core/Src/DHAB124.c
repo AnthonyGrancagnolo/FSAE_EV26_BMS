@@ -17,9 +17,10 @@
 #define OFFSET         2.5f      // volts Tues
 #define SENSITIVITY    0.0267f   // V/A
 
-float getCurrent(const uint16_t *buffer, uint32_t length)
+
+float getCurrent(const uint16_t *buffer, uint32_t avgSamples)
 {
-    uint32_t adc_avg = averageADC(buffer, length);
+    uint32_t adc_avg = averageADC(buffer, avgSamples);
 
     // ADC counts → ADC pin voltage
     float V_adc = (adc_avg * VREF_ADC) / ADC_COUNTS;
@@ -32,12 +33,12 @@ float getCurrent(const uint16_t *buffer, uint32_t length)
 
 }
 
-uint32_t averageADC(const uint16_t *buffer, uint32_t length)
+uint32_t averageADC(const uint16_t *buffer, uint32_t avgSamples)
 {
     uint32_t sum = 0;
 
-    for (uint32_t i = 0; i < length; i++)
+    for (uint32_t i = 0; i < avgSamples; i++)
         sum += buffer[i];
 
-    return sum / length;
+    return sum / avgSamples;
 }
