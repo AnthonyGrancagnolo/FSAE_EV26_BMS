@@ -5110,3 +5110,351 @@ java.lang.IllegalArgumentException: Cannot set lower sequence number for root (p
 	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
 	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.resources 4 0 2026-01-08 13:53:40.749
+!MESSAGE Error occurred while reading master table file
+!STACK 0
+java.nio.charset.MalformedInputException: Input length = 1
+	at java.base/java.nio.charset.CoderResult.throwException(CoderResult.java:279)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:405)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at java.base/java.nio.file.Files.readAllLines(Files.java:3408)
+	at org.eclipse.core.internal.resources.SaveManager.getBadSequenceNumberErrorMessage(SaveManager.java:1670)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1651)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.jobs 4 2 2026-01-08 13:53:40.750
+!MESSAGE An internal error occurred during: "Periodic workspace save.".
+!STACK 0
+java.lang.IllegalArgumentException: Cannot set lower sequence number for root (previous: 29, new: 21). Location: /Users/danielbeachum/git/FSAE_EV26_BMS/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resourcesTimestamps and tree sequence numbers from file:
+	at org.eclipse.core.runtime.Assert.isLegal(Assert.java:68)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1652)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.resources 4 0 2026-01-08 13:53:40.771
+!MESSAGE Error occurred while reading master table file
+!STACK 0
+java.nio.charset.MalformedInputException: Input length = 1
+	at java.base/java.nio.charset.CoderResult.throwException(CoderResult.java:279)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:405)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at java.base/java.nio.file.Files.readAllLines(Files.java:3408)
+	at org.eclipse.core.internal.resources.SaveManager.getBadSequenceNumberErrorMessage(SaveManager.java:1670)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1651)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.jobs 4 2 2026-01-08 13:53:40.771
+!MESSAGE An internal error occurred during: "Periodic workspace save.".
+!STACK 0
+java.lang.IllegalArgumentException: Cannot set lower sequence number for root (previous: 29, new: 21). Location: /Users/danielbeachum/git/FSAE_EV26_BMS/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resourcesTimestamps and tree sequence numbers from file:
+	at org.eclipse.core.runtime.Assert.isLegal(Assert.java:68)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1652)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.resources 4 0 2026-01-08 13:53:40.778
+!MESSAGE Error occurred while reading master table file
+!STACK 0
+java.nio.charset.MalformedInputException: Input length = 1
+	at java.base/java.nio.charset.CoderResult.throwException(CoderResult.java:279)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:405)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at java.base/java.nio.file.Files.readAllLines(Files.java:3408)
+	at org.eclipse.core.internal.resources.SaveManager.getBadSequenceNumberErrorMessage(SaveManager.java:1670)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1651)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.jobs 4 2 2026-01-08 13:53:40.778
+!MESSAGE An internal error occurred during: "Periodic workspace save.".
+!STACK 0
+java.lang.IllegalArgumentException: Cannot set lower sequence number for root (previous: 29, new: 21). Location: /Users/danielbeachum/git/FSAE_EV26_BMS/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resourcesTimestamps and tree sequence numbers from file:
+	at org.eclipse.core.runtime.Assert.isLegal(Assert.java:68)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1652)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.resources 4 0 2026-01-08 13:53:40.787
+!MESSAGE Error occurred while reading master table file
+!STACK 0
+java.nio.charset.MalformedInputException: Input length = 1
+	at java.base/java.nio.charset.CoderResult.throwException(CoderResult.java:279)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:405)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at java.base/java.nio.file.Files.readAllLines(Files.java:3408)
+	at org.eclipse.core.internal.resources.SaveManager.getBadSequenceNumberErrorMessage(SaveManager.java:1670)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1651)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.jobs 4 2 2026-01-08 13:53:40.788
+!MESSAGE An internal error occurred during: "Periodic workspace save.".
+!STACK 0
+java.lang.IllegalArgumentException: Cannot set lower sequence number for root (previous: 29, new: 21). Location: /Users/danielbeachum/git/FSAE_EV26_BMS/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resourcesTimestamps and tree sequence numbers from file:
+	at org.eclipse.core.runtime.Assert.isLegal(Assert.java:68)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1652)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.resources 4 0 2026-01-08 13:53:40.797
+!MESSAGE Error occurred while reading master table file
+!STACK 0
+java.nio.charset.MalformedInputException: Input length = 1
+	at java.base/java.nio.charset.CoderResult.throwException(CoderResult.java:279)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:405)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at java.base/java.nio.file.Files.readAllLines(Files.java:3408)
+	at org.eclipse.core.internal.resources.SaveManager.getBadSequenceNumberErrorMessage(SaveManager.java:1670)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1651)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.jobs 4 2 2026-01-08 13:53:40.797
+!MESSAGE An internal error occurred during: "Periodic workspace save.".
+!STACK 0
+java.lang.IllegalArgumentException: Cannot set lower sequence number for root (previous: 29, new: 21). Location: /Users/danielbeachum/git/FSAE_EV26_BMS/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resourcesTimestamps and tree sequence numbers from file:
+	at org.eclipse.core.runtime.Assert.isLegal(Assert.java:68)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1652)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.resources 4 0 2026-01-08 13:53:40.806
+!MESSAGE Error occurred while reading master table file
+!STACK 0
+java.nio.charset.MalformedInputException: Input length = 1
+	at java.base/java.nio.charset.CoderResult.throwException(CoderResult.java:279)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:405)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at java.base/java.nio.file.Files.readAllLines(Files.java:3408)
+	at org.eclipse.core.internal.resources.SaveManager.getBadSequenceNumberErrorMessage(SaveManager.java:1670)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1651)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.jobs 4 2 2026-01-08 13:53:40.806
+!MESSAGE An internal error occurred during: "Periodic workspace save.".
+!STACK 0
+java.lang.IllegalArgumentException: Cannot set lower sequence number for root (previous: 29, new: 21). Location: /Users/danielbeachum/git/FSAE_EV26_BMS/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resourcesTimestamps and tree sequence numbers from file:
+	at org.eclipse.core.runtime.Assert.isLegal(Assert.java:68)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1652)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-01-08 13:53:50.395
+!MESSAGE Indexed 'EV26_BMS_RTOS_V1' (46 sources, 152 headers) in 4.63 sec: 15,342 declarations; 91,526 references; 2 unresolved inclusions; 45 syntax errors; 147 unresolved names (0.14%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-01-08 13:53:52.389
+!MESSAGE Indexed 'Test_Bench_ADC_CURRSENSOR' (30 sources, 126 headers) in 1.99 sec: 10,068 declarations; 53,428 references; 2 unresolved inclusions; 33 syntax errors; 188 unresolved names (0.3%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-01-08 13:53:54.651
+!MESSAGE Indexed 'EV26_BMS_SM_V1' (31 sources, 126 headers) in 2.25 sec: 11,054 declarations; 61,308 references; 2 unresolved inclusions; 42 syntax errors; 147 unresolved names (0.2%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-01-08 13:53:56.282
+!MESSAGE Indexed 'Test_Bench_CAN' (27 sources, 121 headers) in 1.63 sec: 9,944 declarations; 49,488 references; 2 unresolved inclusions; 33 syntax errors; 188 unresolved names (0.32%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-01-08 13:53:58.463
+!MESSAGE Indexed 'Test_Bench_SPI_V3' (31 sources, 131 headers) in 2.18 sec: 12,579 declarations; 61,078 references; 2 unresolved inclusions; 42 syntax errors; 147 unresolved names (0.2%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-01-08 13:54:00.061
+!MESSAGE Indexed 'Test_bench_SPI_V1' (29 sources, 129 headers) in 1.59 sec: 11,806 declarations; 54,527 references; 2 unresolved inclusions; 33 syntax errors; 325 unresolved names (0.49%)
+
+!ENTRY org.eclipse.core.resources 4 0 2026-01-08 13:58:40.838
+!MESSAGE Error occurred while reading master table file
+!STACK 0
+java.nio.charset.MalformedInputException: Input length = 1
+	at java.base/java.nio.charset.CoderResult.throwException(CoderResult.java:279)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:405)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at java.base/java.nio.file.Files.readAllLines(Files.java:3408)
+	at org.eclipse.core.internal.resources.SaveManager.getBadSequenceNumberErrorMessage(SaveManager.java:1670)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1651)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.jobs 4 2 2026-01-08 13:58:40.840
+!MESSAGE An internal error occurred during: "Periodic workspace save.".
+!STACK 0
+java.lang.IllegalArgumentException: Cannot set lower sequence number for root (previous: 29, new: 21). Location: /Users/danielbeachum/git/FSAE_EV26_BMS/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resourcesTimestamps and tree sequence numbers from file:
+	at org.eclipse.core.runtime.Assert.isLegal(Assert.java:68)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1652)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.launch 2 0 2026-01-08 15:44:03.009
+!MESSAGE Won't launch debug session since we failed to locate the binary.
+
+!ENTRY org.eclipse.core.resources 4 0 2026-01-08 15:48:29.539
+!MESSAGE Error occurred while reading master table file
+!STACK 0
+java.nio.charset.MalformedInputException: Input length = 1
+	at java.base/java.nio.charset.CoderResult.throwException(CoderResult.java:279)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:405)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at java.base/java.nio.file.Files.readAllLines(Files.java:3408)
+	at org.eclipse.core.internal.resources.SaveManager.getBadSequenceNumberErrorMessage(SaveManager.java:1670)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1651)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.jobs 4 2 2026-01-08 15:48:29.540
+!MESSAGE An internal error occurred during: "Periodic workspace save.".
+!STACK 0
+java.lang.IllegalArgumentException: Cannot set lower sequence number for root (previous: 29, new: 21). Location: /Users/danielbeachum/git/FSAE_EV26_BMS/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resourcesTimestamps and tree sequence numbers from file:
+	at org.eclipse.core.runtime.Assert.isLegal(Assert.java:68)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1652)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.resources 4 0 2026-01-08 15:52:19.581
+!MESSAGE Error occurred while reading master table file
+!STACK 0
+java.nio.charset.MalformedInputException: Input length = 1
+	at java.base/java.nio.charset.CoderResult.throwException(CoderResult.java:279)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:405)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at java.base/java.nio.file.Files.readAllLines(Files.java:3408)
+	at org.eclipse.core.internal.resources.SaveManager.getBadSequenceNumberErrorMessage(SaveManager.java:1670)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1651)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.jobs 4 2 2026-01-08 15:52:19.582
+!MESSAGE An internal error occurred during: "Periodic workspace save.".
+!STACK 0
+java.lang.IllegalArgumentException: Cannot set lower sequence number for root (previous: 29, new: 21). Location: /Users/danielbeachum/git/FSAE_EV26_BMS/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resourcesTimestamps and tree sequence numbers from file:
+	at org.eclipse.core.runtime.Assert.isLegal(Assert.java:68)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1652)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1330)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1294)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-01-08 15:52:20.800
+!MESSAGE Indexed 'STM32_ISOSPI_TEST' (3 sources, 53 headers) in 0.217 sec: 1,954 declarations; 2,863 references; 0 unresolved inclusions; 2 syntax errors; 2 unresolved names (0.042%)
