@@ -25,12 +25,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "L9963E.h"
-#include "L9963_utils.h" // We will do this later its from their BMS code not their L9963e Library
+
+#include "L9963E_utils.h" // We will do this later its from their BMS code not their L9963e Library
 #include <string.h>
 #include <stdio.h>
-#include "stm32_if.h"
-#include "ntc.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -82,7 +81,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  L9963E_utils_init();
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -96,11 +95,11 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_SPI3_Init();
-  MX_SPI2_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_GPIO_WritePin(NSLAVE1_GPIO_Port, NSLAVE1_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(TXAMP1_GPIO_Port, TXAMP1_Pin, GPIO_PIN_SET);
+  //HAL_GPIO_WritePin(NSLAVE1_GPIO_Port, NSLAVE1_Pin, GPIO_PIN_SET);
+  //HAL_GPIO_WritePin(TXAMP1_GPIO_Port, TXAMP1_Pin, GPIO_PIN_SET);
+  L9963E_utils_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -108,8 +107,10 @@ int main(void)
   while (1)
   {
 
+	  L9963E_utils_read_cells(1);
+	  float cell0_mv = L9963E_utils_get_cell_mv(0);
+	  HAL_Delay(1000);
 
-	  HAL_Delay(100);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
