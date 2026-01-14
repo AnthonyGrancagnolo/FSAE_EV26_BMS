@@ -90,6 +90,21 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
                                                  uint8_t out_res_tx_iso,
                                                  uint8_t lock_isofreq);
 /**
+ * @brief Performs the addressing procedure for L9963E devices.
+ *
+ * @param handle Pointer to the L9963E handle structure.
+ * @param iso_freq_sel ISO frequency selection.
+ * @param is_dual_ring Dual ring configuration flag.
+ * @param out_res_tx_iso Output resistance TX ISO setting.
+ * @param lock_isofreq Lock ISO frequency flag.
+ * @return L9963E status (L9963E_OK on success, L9963E_ERROR on failure, L9963E_TIMEOUT on timeout).
+ */
+L9963E_StatusTypeDef L9963E_addressing_procedure2(L9963E_HandleTypeDef *handle,
+                                                 uint8_t iso_freq_sel,
+                                                 uint8_t is_dual_ring,
+                                                 uint8_t out_res_tx_iso,
+                                                 uint8_t lock_isofreq);
+/**
  * @brief Performs a SW reset.
  * 
  * @param handle Pointer to the L9963E handle structure.

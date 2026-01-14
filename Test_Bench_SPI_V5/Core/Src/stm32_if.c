@@ -62,7 +62,7 @@ L9963E_StatusTypeDef GPIO_WritePin(L9963E_IF_PINS pin, L9963E_IF_PinState state)
 L9963E_StatusTypeDef SPI_Receive(uint8_t *data, uint8_t size, uint8_t timeout_ms) {
     HAL_StatusTypeDef errorcode;
 
-    errorcode = HAL_SPI_Receive(&hspi1, data, size, timeout_ms);
+    errorcode = HAL_SPI_Receive(&hspi2, data, size, timeout_ms);
 
     switch (errorcode) {
         case HAL_OK:
@@ -76,7 +76,7 @@ L9963E_StatusTypeDef SPI_Receive(uint8_t *data, uint8_t size, uint8_t timeout_ms
 L9963E_StatusTypeDef SPI_Transmit(uint8_t *data, uint8_t size, uint8_t timeout_ms) {
     HAL_StatusTypeDef errorcode;
 
-    errorcode = HAL_SPI_Transmit(&hspi1, data, size, timeout_ms);
+    errorcode = HAL_SPI_Transmit(&hspi2, data, size, timeout_ms);
 
     switch (errorcode) {
         case HAL_OK:
