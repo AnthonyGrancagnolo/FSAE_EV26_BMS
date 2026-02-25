@@ -1,5 +1,0 @@
-Start up sequence
-
-Send wake up CMD
-
-Send burst CMD 0x78 burst command

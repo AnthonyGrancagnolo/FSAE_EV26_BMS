@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "adc.h"
 #include "spi.h"
 #include "gpio.h"
 
@@ -26,6 +25,7 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 #include "L9963E_utils.h"
 
 /* USER CODE END Includes */
@@ -37,7 +37,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define SPI_TX_BUF_SIZE 5
 #define L9963E_DEBUG
 /* USER CODE END PD */
 
@@ -62,8 +61,166 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+void L9963T_init(void){
+
+	HAL_GPIO_WritePin(L9963T_CLKFREQ_GPIO_OUT_GPIO_Port,L0063T_CLKFREQ_GPIO_OUT_Pin,GPIO_Pin_Set);
+}
+
+// Transmit and recive frame, data ready to be transmitted
+	  uint8_t Wake_Up[5] = {
+			  0x55,  // Byte 0: P.A.=0, R/W=0, Dev ID=0000 (broadcast)
+		      0x55,  // Byte 1: Address = 0x00
+			  0x55,  // Byte 2: GSW + Data (upper bits)
+			  0x55,  // Byte 3: Data (middle bits)
+			  0x55,   // Byte 4: Data (lower bits) + CRC
+	  };
 
 
+	uint8_t TX_Buffer[5] = {
+			0x00,
+	   	    0x00,
+		    0x08,
+			0x04,
+			0xC2};
+
+ uint8_t RX_Request[5] = {
+		   0x00,
+			  0x00,
+			  0x00,
+			  0x04,
+		      0x82};
+
+	 uint8_t RX_Buffer[5] = {
+	  	  0x00,  // Byte 0: P.A.=0, R/W=0, Dev ID=0000 (broadcast)
+	  	  0x00,  // Byte 1: Address = 0x00
+   	      0x00,  // Byte 2: GSW + Data (upper bits)
+  	  	  0x00,  // Byte 3: Data (middle bits)
+	  	  0x00   // Byte 4: Data (lower bits) + CRC
+	  	  	  };
+	 uint8_t TX_Dummy[5] = {
+	 	  	  0x00,  // Byte 0: P.A.=0, R/W=0, Dev ID=0000 (broadcast)
+	 	  	  0x00,  // Byte 1: Address = 0x00
+	    	  0x00,  // Byte 2: GSW + Data (upper bits)
+	   	  	  0x00,  // Byte 3: Data (middle bits)
+	 	  	  0x00   // Byte 4: Data (lower bits) + CRC
+	 	  	  	  };
+
+
+void Daniel_init(void){
+
+
+
+
+    HAL_GPIO_WritePin(NSLAVE_GPIO_Port, NSLAVE_Pin, GPIO_PIN_RESET); // 1 = on
+    HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_SET); // 1 = on
+    HAL_GPIO_WritePin(TXAMP_GPIO_Port, TXAMP_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(ISOFREQ_GPIO_Port, ISOFREQ_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(DIS_GPIO_Port, DIS_Pin, GPIO_PIN_RESET);
+    //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+
+    // Start main thing
+
+
+    uint8_t TX_Hold1[5] = {};
+    uint8_t TX_Hold2[5] = {};
+    uint8_t TX_Hold3[5] = {};
+
+          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+          HAL_SPI_Transmit(&hspi3, Wake_Up,5,32); //Sending in DMA mode
+          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+    	  HAL_Delay(2);
+
+/*
+			HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_RESET); // 1 = on
+			//while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_12) == 1){}
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+			HAL_SPI_Receive(&hspi3, RX_Buffer, 5, 32);
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_SET); // 1 = on
+
+*/
+
+          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+          L9963E_Add_CRC_To_Word(TX_Buffer);
+          switch_endianness(TX_Buffer, TX_Hold1,1);
+          HAL_SPI_Transmit(&hspi3, TX_Hold1,5,32); //Sending in DMA mode
+          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+
+
+/*
+
+          	  	  	HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_RESET); // 1 = on
+                    //while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_12) == 1){}
+                    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+                    HAL_SPI_Receive(&hspi3, RX_Buffer, 5, 32);
+                    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+                    HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_SET); // 1 = on
+*/
+
+
+          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+          L9963E_Add_CRC_To_Word(RX_Request);
+          switch_endianness(RX_Request, TX_Hold2,1);
+          HAL_SPI_Transmit(&hspi3, TX_Hold2,5,32); //Sending in DMA mode
+          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+
+/*
+
+          HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_RESET); // 1 = on
+          //while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_12) == 1){}
+          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+          HAL_SPI_Receive(&hspi3, RX_Buffer, 5, 32);
+          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+          HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_SET); // 1 = on
+
+*/
+
+                   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+                   L9963E_Add_CRC_To_Word(TX_Dummy);
+                   switch_endianness(TX_Dummy, TX_Hold3,0);
+                   HAL_SPI_Transmit(&hspi3, TX_Hold3,5,32); //Sending in DMA mode
+                   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+               //    HAL_Delay(2);
+
+         HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_RESET); // 1 = on
+                            //while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_12) == 1){}
+                  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+                  HAL_SPI_Receive(&hspi3, RX_Buffer, 5, 32);
+                  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+                  HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_SET); // 1 = on
+
+                  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+                                     L9963E_Add_CRC_To_Word(TX_Dummy);
+                                     switch_endianness(TX_Dummy, TX_Hold3,0);
+                                     HAL_SPI_Transmit(&hspi3, TX_Hold3,5,32); //Sending in DMA mode
+                                     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+                                  //   HAL_Delay(2);
+
+                           HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_RESET); // 1 = on
+                                              //while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_12) == 1){}
+                                    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+                                    HAL_SPI_Receive(&hspi3, RX_Buffer, 5, 32);
+                                    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+                                    HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_SET); // 1 = on
+
+                                    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+                                                       L9963E_Add_CRC_To_Word(TX_Dummy);
+                                                       switch_endianness(TX_Dummy, TX_Hold3,0);
+                                                       HAL_SPI_Transmit(&hspi3, TX_Hold3,5,32); //Sending in DMA mode
+                                                       HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+                                                   //    HAL_Delay(2);
+
+                                             HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_RESET); // 1 = on
+                                                                //while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_12) == 1){}
+                                                      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+                                                      HAL_SPI_Receive(&hspi3, RX_Buffer, 5, 32);
+                                                      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+                                                      HAL_GPIO_WritePin(TXEN_GPIO_Port, TXEN_Pin, GPIO_PIN_SET); // 1 = on
+
+         // HAL_SPI_Transmit_DMA(&hspi3, TX_Buffer, 1); //
+
+
+}
 /* USER CODE END 0 */
 
 /**
@@ -83,7 +240,8 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  void L9963E_Add_CRC_To_Word(uint8_t *word);
+  uint8_t L9963E_Calculate_CRC(uint8_t *data, uint8_t length);
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -95,14 +253,18 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_ADC1_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
   while(HAL_GetTick() < 500)
     HAL_Delay(100);
-  //HAL_GPIO_WritePin(L9963T_CLKFREQ_GPIO_OUT_GPIO_Port,L9963T_CLKFREQ_GPIO_OUT_Pin,GPIO_PIN_RESET);
-  //Initalize the L9963Es
+
   L9963E_utils_init();
+  // init the L9963E for RX only
+  //NSLAVE = 0
+  // ISOFREQ = 0
+  // TXAMP = 0
+  //
+  Daniel_init();
 
   /* USER CODE END 2 */
 
@@ -125,18 +287,17 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL2;
-  RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV3;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL4;
+  RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV1;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -155,15 +316,103 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC12;
-  PeriphClkInit.Adc12ClockSelection = RCC_ADC12PLLCLK_DIV1;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
-  {
-    Error_Handler();
-  }
 }
 
 /* USER CODE BEGIN 4 */
+// Makes a frame of Data from inputs
+
+uint8_t Frame_Builder(uint8_t Data, uint8_t Address, uint8_t RW){
+
+	uint8_t TX_Frame[5] = {};
+
+	 TX_Frame[0] = Data >> 32;
+	 TX_Frame[1] = (Address >> 24) & 0x4;
+	 TX_Frame[2] = RW >> 8;
+
+
+	return TX_Frame;
+}
+
+
+void switch_endianness(uint8_t *in, uint8_t *out, uint8_t state) {
+
+
+if(state == 1){
+    out[0] = in[4];
+    out[1] = in[3];
+    out[2] = in[2];
+    out[3] = in[1];
+    out[4] = in[0];
+}else if(state == 0){
+    out[0] = in[0];
+    out[1] = in[1];
+    out[2] = in[2];
+    out[3] = in[3];
+    out[4] = in[4];
+}
+    return;
+}
+
+// Claude CRC code
+
+/**
+ * @brief Calculate 6-bit CRC for L9963E communication
+ * @param data Pointer to data bytes (40 bits = 5 bytes)
+ * @param length Number of bytes to process (typically 5 for 40-bit word)
+ * @return 6-bit CRC value
+ */
+uint8_t L9963E_Calculate_CRC(uint8_t *data, uint8_t length)
+{
+    uint8_t crc = L9963E_CRC_INIT;
+    uint8_t i, j;
+
+    for (i = 0; i < length; i++)
+    {
+        crc ^= data[i];
+
+        for (j = 0; j < 8; j++)
+        {
+            if (crc & 0x80)  // Check MSB
+            {
+                crc = (crc << 1) ^ L9963E_CRC_POLY;
+            }
+            else
+            {
+                crc = crc << 1;
+            }
+        }
+    }
+
+    // Return only 6-bit CRC
+    return (crc >> 2) & 0x3F;
+}
+
+/**
+ * @brief Add CRC to a 40-bit word in the first 6 bits
+ * @param word Pointer to 40-bit word (5 bytes array)
+ * @note The CRC is placed in bits [39:34] (first 6 bits of first byte)
+ *       The function assumes data is in bits [33:0]
+ */
+void L9963E_Add_CRC_To_Word(uint8_t *word)
+{
+    uint8_t crc;
+    uint8_t temp_data[5];
+
+    // Copy word data, clearing the CRC bits
+    temp_data[0] = word[0] & 0x03;  // Clear upper 6 bits (CRC field)
+    temp_data[1] = word[1];
+    temp_data[2] = word[2];
+    temp_data[3] = word[3];
+    temp_data[4] = word[4];
+
+    // Calculate CRC on the 34-bit data portion
+    crc = L9963E_Calculate_CRC(temp_data, 5);
+
+    // Insert CRC into the upper 6 bits of first byte
+    word[0] = (word[0] & 0x03) | (crc << 2);
+}
+
+
 
 /* USER CODE END 4 */
 

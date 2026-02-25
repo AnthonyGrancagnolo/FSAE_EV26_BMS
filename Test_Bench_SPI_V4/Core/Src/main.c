@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 STMicroelectronics.
+  * Copyright (c) 2026 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -26,10 +26,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include "L9963E_utils.h" // We will do this later its from their BMS code not their L9963e Library
-#include <string.h>
-#include <stdio.h>
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,6 +40,73 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
+void L9963T_init(void){
+	HAL_GPIO_WritePin(L9963T_NCS_GPIO_OUT_GPIO_Port,L9963T_NCS_GPIO_OUT_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(L9963T_TXEN_GPIO_OUT_GPIO_Port,L9963T_TXEN_GPIO_OUT_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(L9963T_TXAMP_GPIO_OUT_GPIO_Port,L9963T_TXAMP_GPIO_OUT_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(L9963T_ISOFREQ_GPIO_OUT_GPIO_Port,L9963T_ISOFREQ_GPIO_OUT_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(L9963T_DIS_GPIO_INOUT_GPIO_Port,L9963T_DIS_GPIO_INOUT_Pin, GPIO_PIN_RESET);
+}
+
+
+#define FRAME_SIZE 5
+#define SPI_TRANSMIT_TIMEOUT 10
+
+void L9963E_wakeup(void){
+
+	uint8_t wakeup_frame[FRAME_SIZE] = {0x55, 0x55, 0x55, 0x55, 0x55};
+
+	HAL_GPIO_WritePin(L9963T_TXEN_GPIO_OUT_GPIO_Port,L9963T_TXEN_GPIO_OUT_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(L9963T_NCS_GPIO_OUT_GPIO_Port,L9963T_NCS_GPIO_OUT_Pin, GPIO_PIN_RESET);
+	HAL_SPI_Transmit(&hspi3, wakeup_frame,FRAME_SIZE,SPI_TRANSMIT_TIMEOUT );
+	HAL_GPIO_WritePin(L9963T_NCS_GPIO_OUT_GPIO_Port,L9963T_NCS_GPIO_OUT_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(L9963T_TXEN_GPIO_OUT_GPIO_Port,L9963T_TXEN_GPIO_OUT_Pin, GPIO_PIN_RESET);
+
+}
+
+void l9963TL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout){
+
+	HAL_GPIO_WritePin(L9963T_TXEN_GPIO_OUT_GPIO_Port,L9963T_TXEN_GPIO_OUT_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(L9963T_NCS_GPIO_OUT_GPIO_Port,L9963T_NCS_GPIO_OUT_Pin, GPIO_PIN_RESET);
+	HAL_SPI_Transmit(hspi, pData,Size,Timeout);
+	HAL_GPIO_WritePin(L9963T_NCS_GPIO_OUT_GPIO_Port,L9963T_NCS_GPIO_OUT_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(L9963T_TXEN_GPIO_OUT_GPIO_Port,L9963T_TXEN_GPIO_OUT_Pin, GPIO_PIN_RESET);
+
+}
+void L9963TL_SPI_WaitAndRecieve(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout){
+	while(HAL_GPIO_ReadPin(L9963T_DIS_GPIO_INOUT_GPIO_Port,L9963T_DIS_GPIO_INOUT_Pin) != 0);
+	HAL_GPIO_WritePin(L9963T_NCS_GPIO_OUT_GPIO_Port,L9963T_NCS_GPIO_OUT_Pin, GPIO_PIN_RESET);
+	HAL_SPI_Receive(hspi, pData,Size,Timeout);
+	HAL_GPIO_WritePin(L9963T_NCS_GPIO_OUT_GPIO_Port,L9963T_NCS_GPIO_OUT_Pin, GPIO_PIN_SET);
+}
+
+void L9963E_init(uint8_t n_slaves){
+	uint8_t x = 0;
+
+	L9963E_wakeup();
+	HAL_Delay(2);
+	L9963E_wakeup();
+	uint8_t init_frame[FRAME_SIZE] = {0x83, 0x84, 0x00, 0x00, 0xB7};
+	uint8_t RX_frame[FRAME_SIZE] = {0x00, 0x00, 0x00, 0x00, 0x00};
+
+	HAL_Delay(10);
+	//while(x < n_slaves){
+		l9963TL_SPI_Transmit(&hspi3, init_frame,FRAME_SIZE,SPI_TRANSMIT_TIMEOUT);
+		//L9963TL_SPI_WaitAndRecieve(&hspi3, RX_frame,FRAME_SIZE,SPI_TRANSMIT_TIMEOUT);
+		/*if(1){
+			//read back
+
+			// read back sucessfull increment x
+			x++;
+		}else{
+
+		}
+			//send cmd to dev gen reg with
+		*/
+	//}
+
+}
+
 
 /* USER CODE END PM */
 
@@ -97,19 +160,14 @@ int main(void)
   MX_SPI3_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-  //HAL_GPIO_WritePin(NSLAVE1_GPIO_Port, NSLAVE1_Pin, GPIO_PIN_SET);
-  //HAL_GPIO_WritePin(TXAMP1_GPIO_Port, TXAMP1_Pin, GPIO_PIN_SET);
-  L9963E_utils_init();
+  L9963T_init();
+  L9963E_init(1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
-	  L9963E_utils_read_cells(1);
-	  float cell0_mv = L9963E_utils_get_cell_mv(0);
-	  HAL_Delay(1000);
 
     /* USER CODE END WHILE */
 
@@ -147,7 +205,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV2;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 

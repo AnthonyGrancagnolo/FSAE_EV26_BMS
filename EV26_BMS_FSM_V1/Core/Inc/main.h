@@ -57,6 +57,20 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define TXAMP_Pin GPIO_PIN_6
+#define TXAMP_GPIO_Port GPIOC
+#define CLKFREQ_Pin GPIO_PIN_7
+#define CLKFREQ_GPIO_Port GPIOC
+#define TXEN_Pin GPIO_PIN_8
+#define TXEN_GPIO_Port GPIOC
+#define NSLAVE_Pin GPIO_PIN_9
+#define NSLAVE_GPIO_Port GPIOC
+#define BNE_Pin GPIO_PIN_8
+#define BNE_GPIO_Port GPIOA
+#define ISOFREK_Pin GPIO_PIN_9
+#define ISOFREK_GPIO_Port GPIOA
+#define DIS_Pin GPIO_PIN_10
+#define DIS_GPIO_Port GPIOA
 #define Shutdown_Ctl_Pin GPIO_PIN_6
 #define Shutdown_Ctl_GPIO_Port GPIOB
 
