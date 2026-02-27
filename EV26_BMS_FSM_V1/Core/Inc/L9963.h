@@ -27,12 +27,12 @@ extern SPI_HandleTypeDef hspi3;
 /**
  * @brief Initialize L9963T control pins
  */
-void L9963T_init(void);
+void L9963T_Init(void);
 
 /**
  * @brief Send isoSPI wakeup sequence to L9963E
  */
-void L9963E_wakeup(void);
+void L9963E_Wakeup(void);
 
 /**
  * @brief Transmit frame via L9963T
@@ -53,7 +53,7 @@ void L9963TL_SPI_WaitAndRecieve(SPI_HandleTypeDef *hspi,
 /**
  * @brief Initialize L9963E chain
  */
-void L9963E_init(uint8_t n_slaves);
+void L9963E_Init(uint8_t n_slaves);
 
 #ifdef __cplusplus
 }

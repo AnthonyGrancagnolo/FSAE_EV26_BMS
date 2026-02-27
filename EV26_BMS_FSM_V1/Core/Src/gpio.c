@@ -45,30 +45,36 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, TXAMP_Pin|CLKFREQ_Pin|TXEN_Pin|NSLAVE_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, L9963T_TXAMP_GPIO_OUT_Pin|L9963T_CLKFREQ_GPIO_OUT_Pin|L9963T_TXEN_GPIO_OUT_Pin|L9963T_NSLAVE_GPIO_OUT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, BNE_Pin|ISOFREK_Pin|DIS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, L9963T_ISOFREQ_GPIO_OUT_Pin|L9963T_DIS_GPIO_INOUT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(Shutdown_Ctl_GPIO_Port, Shutdown_Ctl_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : TXAMP_Pin CLKFREQ_Pin TXEN_Pin */
-  GPIO_InitStruct.Pin = TXAMP_Pin|CLKFREQ_Pin|TXEN_Pin;
+  /*Configure GPIO pins : L9963T_TXAMP_GPIO_OUT_Pin L9963T_CLKFREQ_GPIO_OUT_Pin L9963T_TXEN_GPIO_OUT_Pin */
+  GPIO_InitStruct.Pin = L9963T_TXAMP_GPIO_OUT_Pin|L9963T_CLKFREQ_GPIO_OUT_Pin|L9963T_TXEN_GPIO_OUT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : NSLAVE_Pin */
-  GPIO_InitStruct.Pin = NSLAVE_Pin;
+  /*Configure GPIO pin : L9963T_NSLAVE_GPIO_OUT_Pin */
+  GPIO_InitStruct.Pin = L9963T_NSLAVE_GPIO_OUT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(NSLAVE_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(L9963T_NSLAVE_GPIO_OUT_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : BNE_Pin ISOFREK_Pin DIS_Pin */
-  GPIO_InitStruct.Pin = BNE_Pin|ISOFREK_Pin|DIS_Pin;
+  /*Configure GPIO pin : L9963T_BNE_GPIO_INPUT_Pin */
+  GPIO_InitStruct.Pin = L9963T_BNE_GPIO_INPUT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(L9963T_BNE_GPIO_INPUT_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : L9963T_ISOFREQ_GPIO_OUT_Pin L9963T_DIS_GPIO_INOUT_Pin */
+  GPIO_InitStruct.Pin = L9963T_ISOFREQ_GPIO_OUT_Pin|L9963T_DIS_GPIO_INOUT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
