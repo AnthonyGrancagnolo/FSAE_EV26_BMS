@@ -32,7 +32,12 @@
 
 /* USER CODE END 1 */
 
-/** Configure pins
+/** Configure pins as
+        * Analog
+        * Input
+        * Output
+        * EVENT_OUT
+        * EXTI
 */
 void MX_GPIO_Init(void)
 {
@@ -43,6 +48,10 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, L9963T_NCS_GPIO_OUT_Pin|EEPROM_NHold_GPIO_OUT_Pin|Shutdown_Ctl_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, L9963T_TXAMP_GPIO_OUT_Pin|L9963T_CLKFREQ_GPIO_OUT_Pin|L9963T_TXEN_GPIO_OUT_Pin|L9963T_NSLAVE_GPIO_OUT_Pin, GPIO_PIN_RESET);
@@ -51,7 +60,14 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, L9963T_ISOFREQ_GPIO_OUT_Pin|L9963T_DIS_GPIO_INOUT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(Shutdown_Ctl_GPIO_Port, Shutdown_Ctl_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(EEPROM_NCS_GPIO_OUT_GPIO_Port, EEPROM_NCS_GPIO_OUT_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : L9963T_NCS_GPIO_OUT_Pin EEPROM_NHold_GPIO_OUT_Pin Shutdown_Ctl_Pin */
+  GPIO_InitStruct.Pin = L9963T_NCS_GPIO_OUT_Pin|EEPROM_NHold_GPIO_OUT_Pin|Shutdown_Ctl_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : L9963T_TXAMP_GPIO_OUT_Pin L9963T_CLKFREQ_GPIO_OUT_Pin L9963T_TXEN_GPIO_OUT_Pin */
   GPIO_InitStruct.Pin = L9963T_TXAMP_GPIO_OUT_Pin|L9963T_CLKFREQ_GPIO_OUT_Pin|L9963T_TXEN_GPIO_OUT_Pin;
@@ -80,12 +96,12 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : Shutdown_Ctl_Pin */
-  GPIO_InitStruct.Pin = Shutdown_Ctl_Pin;
+  /*Configure GPIO pin : EEPROM_NCS_GPIO_OUT_Pin */
+  GPIO_InitStruct.Pin = EEPROM_NCS_GPIO_OUT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(Shutdown_Ctl_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(EEPROM_NCS_GPIO_OUT_GPIO_Port, &GPIO_InitStruct);
 
 }
 

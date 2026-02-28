@@ -27,7 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "L9963.h"
-
+#include "CANMessages.h"
 
 /* USER CODE END Includes */
 
@@ -80,8 +80,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  L9963T_Init();
-  //L9963E_Init(1);
+ 
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -99,13 +98,22 @@ int main(void)
   MX_SPI2_Init();
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
-
+ 
+  L9963T_Init();
+  L9963E_Init(1); 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    /*
+    L9963E_Wakeup();
+    HAL_Delay(100);
+    */
+
+    
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

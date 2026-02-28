@@ -1,14 +1,16 @@
 #include "L9963.h"
 #include "main.h"
 #include "spi.h"
+#include "stm32f3xx_hal_gpio.h"
 
 
 void L9963T_Init(void){
-	HAL_GPIO_WritePin(L9963T_NCS_GPIO_OUT_GPIO_Port,L9963T_NCS_GPIO_OUT_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(L9963T_TXEN_GPIO_OUT_GPIO_Port,L9963T_TXEN_GPIO_OUT_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(L9963T_TXAMP_GPIO_OUT_GPIO_Port,L9963T_TXAMP_GPIO_OUT_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(L9963T_ISOFREQ_GPIO_OUT_GPIO_Port,L9963T_ISOFREQ_GPIO_OUT_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(L9963T_DIS_GPIO_INOUT_GPIO_Port,L9963T_DIS_GPIO_INOUT_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(L9963T_NCS_GPIO_OUT_GPIO_Port,L9963T_NCS_GPIO_OUT_Pin, GPIO_PIN_SET); // Set Chip Select High
+	HAL_GPIO_WritePin(L9963T_TXEN_GPIO_OUT_GPIO_Port,L9963T_TXEN_GPIO_OUT_Pin, GPIO_PIN_SET); // Always input to T NSlave 0 -> txen high to enable tx activicty low to disable tx
+	HAL_GPIO_WritePin(L9963T_TXAMP_GPIO_OUT_GPIO_Port,L9963T_TXAMP_GPIO_OUT_Pin, GPIO_PIN_RESET); // Iso spi amplitude selection
+	HAL_GPIO_WritePin(L9963T_ISOFREQ_GPIO_OUT_GPIO_Port,L9963T_ISOFREQ_GPIO_OUT_Pin, GPIO_PIN_RESET); //High -> High IsoSPI frequency, Low -> Low IsoSPI frequency
+	HAL_GPIO_WritePin(L9963T_DIS_GPIO_INOUT_GPIO_Port,L9963T_DIS_GPIO_INOUT_Pin, GPIO_PIN_RESET); // Digial Input / output. DIS pin high device low power mode, low device normal operation
+	HAL_GPIO_WritePin(L9963T_NSLAVE_GPIO_OUT_GPIO_Port,L9963T_NSLAVE_GPIO_OUT_Pin, GPIO_PIN_SET); // Low -> Slave, High -> Slave 
 }
 void l9963TL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout){
 
@@ -28,8 +30,8 @@ void L9963TL_SPI_WaitAndRecieve(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_
 }
 void L9963E_Wakeup(void){
 
-	uint8_t wakeup_frame[FRAME_SIZE] = {0x55, 0x55, 0x55, 0x55, 0x55};
-
+	uint8_t wakeup_frame[FRAME_SIZE] = {0xFF, 0x00, 0xFF, 0x00, 0xFF};
+	
 	l9963TL_SPI_Transmit(&hspi2, wakeup_frame,FRAME_SIZE,SPI_TRANSMIT_TIMEOUT);
 
 }

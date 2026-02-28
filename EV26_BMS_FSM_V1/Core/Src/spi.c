@@ -41,11 +41,11 @@ void MX_SPI2_Init(void)
   hspi2.Instance = SPI2;
   hspi2.Init.Mode = SPI_MODE_MASTER;
   hspi2.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi2.Init.DataSize = SPI_DATASIZE_4BIT;
-  hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi2.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi2.Init.NSS = SPI_NSS_HARD_OUTPUT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi2.Init.NSS = SPI_NSS_SOFT;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -110,12 +110,11 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
 
     __HAL_RCC_GPIOB_CLK_ENABLE();
     /**SPI2 GPIO Configuration
-    PB12     ------> SPI2_NSS
     PB13     ------> SPI2_SCK
     PB14     ------> SPI2_MISO
     PB15     ------> SPI2_MOSI
     */
-    GPIO_InitStruct.Pin = L9963T_NCS_GPIO_OUT_Pin|L9963T_SCK_GPIO_OUT_Pin|L9963T_MISO_GPIO_OUT_Pin|L9963T_MOSI_GPIO_OUT_Pin;
+    GPIO_InitStruct.Pin = L9963T_SCK_GPIO_OUT_Pin|L9963T_MISO_GPIO_OUT_Pin|L9963T_MOSI_GPIO_OUT_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
@@ -140,7 +139,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     PC11     ------> SPI3_MISO
     PC12     ------> SPI3_MOSI
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12;
+    GPIO_InitStruct.Pin = EEPROM_SCK_GPIO_OUT_Pin|EEPROM_MISO_GPIO_IN_Pin|EEPROM_MOSI_GPIO_OUT_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
@@ -165,12 +164,11 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
     __HAL_RCC_SPI2_CLK_DISABLE();
 
     /**SPI2 GPIO Configuration
-    PB12     ------> SPI2_NSS
     PB13     ------> SPI2_SCK
     PB14     ------> SPI2_MISO
     PB15     ------> SPI2_MOSI
     */
-    HAL_GPIO_DeInit(GPIOB, L9963T_NCS_GPIO_OUT_Pin|L9963T_SCK_GPIO_OUT_Pin|L9963T_MISO_GPIO_OUT_Pin|L9963T_MOSI_GPIO_OUT_Pin);
+    HAL_GPIO_DeInit(GPIOB, L9963T_SCK_GPIO_OUT_Pin|L9963T_MISO_GPIO_OUT_Pin|L9963T_MOSI_GPIO_OUT_Pin);
 
   /* USER CODE BEGIN SPI2_MspDeInit 1 */
 
@@ -189,7 +187,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
     PC11     ------> SPI3_MISO
     PC12     ------> SPI3_MOSI
     */
-    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12);
+    HAL_GPIO_DeInit(GPIOC, EEPROM_SCK_GPIO_OUT_Pin|EEPROM_MISO_GPIO_IN_Pin|EEPROM_MOSI_GPIO_OUT_Pin);
 
   /* USER CODE BEGIN SPI3_MspDeInit 1 */
 

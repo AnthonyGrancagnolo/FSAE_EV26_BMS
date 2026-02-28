@@ -15,12 +15,6 @@ extern "C" {
 #define SPI_TRANSMIT_TIMEOUT    10
 
 /* =======================
-   External SPI Handle
-   ======================= */
-
-extern SPI_HandleTypeDef hspi3;
-
-/* =======================
    Function Prototypes
    ======================= */
 

@@ -57,6 +57,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define DHAB_HIGH_ADC_IN_Pin GPIO_PIN_0
+#define DHAB_HIGH_ADC_IN_GPIO_Port GPIOA
+#define DHAB_LOW_ADC_IN_Pin GPIO_PIN_2
+#define DHAB_LOW_ADC_IN_GPIO_Port GPIOA
 #define L9963T_NCS_GPIO_OUT_Pin GPIO_PIN_12
 #define L9963T_NCS_GPIO_OUT_GPIO_Port GPIOB
 #define L9963T_SCK_GPIO_OUT_Pin GPIO_PIN_13
@@ -79,6 +83,16 @@ void Error_Handler(void);
 #define L9963T_ISOFREQ_GPIO_OUT_GPIO_Port GPIOA
 #define L9963T_DIS_GPIO_INOUT_Pin GPIO_PIN_10
 #define L9963T_DIS_GPIO_INOUT_GPIO_Port GPIOA
+#define EEPROM_SCK_GPIO_OUT_Pin GPIO_PIN_10
+#define EEPROM_SCK_GPIO_OUT_GPIO_Port GPIOC
+#define EEPROM_MISO_GPIO_IN_Pin GPIO_PIN_11
+#define EEPROM_MISO_GPIO_IN_GPIO_Port GPIOC
+#define EEPROM_MOSI_GPIO_OUT_Pin GPIO_PIN_12
+#define EEPROM_MOSI_GPIO_OUT_GPIO_Port GPIOC
+#define EEPROM_NCS_GPIO_OUT_Pin GPIO_PIN_2
+#define EEPROM_NCS_GPIO_OUT_GPIO_Port GPIOD
+#define EEPROM_NHold_GPIO_OUT_Pin GPIO_PIN_4
+#define EEPROM_NHold_GPIO_OUT_GPIO_Port GPIOB
 #define Shutdown_Ctl_Pin GPIO_PIN_6
 #define Shutdown_Ctl_GPIO_Port GPIOB
 
